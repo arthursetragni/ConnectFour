@@ -36,11 +36,15 @@ public class JogoService{
 		
 		jogoDAO.add(jogo);
 		jogoDAO.close();
-		response.redirect("./teste.html");
+		response.redirect("./index.html");
 		return jogo;
 	}
 
 	public Object jogada(Request request, Response response) {
+		response.header("Access-Control-Allow-Origin", "*");
+        response.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        response.header("Access-Control-Allow-Headers", "Content-Type");
+
 		int coluna = Integer.parseInt(request.queryParams("coluna"));
 		
 		TabuleiroService tabuleiro = new TabuleiroService();
@@ -70,7 +74,7 @@ public class JogoService{
 			return null;
 		}
 		
-		response.redirect("./teste.html");
+		response.redirect("./index.html");
 		
 		return null;
 	}

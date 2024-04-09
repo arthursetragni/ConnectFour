@@ -43,6 +43,14 @@ body {
   background-color: white;
 }
 
+.board .celulaVermelha{
+  background-color: rgb(238, 42, 42);
+}
+
+.board .celulaAzul{
+  background-color: rgb(78, 78, 190);
+}
+
 /* .board div:nth-child(8) {
   background-color: red;
   /* Outros estilos para a primeira célula

@@ -2,6 +2,8 @@ package service;
 
 import dao.*;
 import model.*;
+import spark.*;
+
 public class TabuleiroService{
 	private TabuleiroDAO tabuleiroDAO;
 	
@@ -50,5 +52,47 @@ public class TabuleiroService{
 		
 		return true;
 	}
+
+	public String getTabuleiro(Request request,Response response){
+		response.header("Access-Control-Allow-Origin", "*");
+        response.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+        response.header("Access-Control-Allow-Headers", "Content-Type");
+        
+        
+		tabuleiroDAO.connect();
+
+		Tabuleiro tabuleiro = tabuleiroDAO.get(Integer.parseInt(request.params("id")));
+
+		return converterMatrizParaJSON(tabuleiro.getTabuleiro());
+	}
+
+	public static String converterMatrizParaJSON(int[][] matriz) {
+        StringBuilder jsonBuilder = new StringBuilder();
+        jsonBuilder.append("["); // Início do array JSON externo
+
+        for (int i = 0; i < matriz.length; i++) {
+            jsonBuilder.append("["); // Início do array JSON interno
+
+            for (int j = 0; j < matriz[i].length; j++) {
+                jsonBuilder.append(matriz[i][j]);
+
+                // Adiciona vírgula entre os elementos, exceto para o último elemento
+                if (j < matriz[i].length - 1) {
+                    jsonBuilder.append(",");
+                }
+            }
+
+            jsonBuilder.append("]");
+
+            // Adiciona vírgula entre os arrays internos, exceto para o último array
+            if (i < matriz.length - 1) {
+                jsonBuilder.append(",");
+            }
+        }
+
+        jsonBuilder.append("]"); // Fim do array JSON externo
+
+        return jsonBuilder.toString();
+    }
 	
 }

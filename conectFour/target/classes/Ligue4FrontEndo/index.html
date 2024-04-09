@@ -6,15 +6,164 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
   <title>Connect Four</title>
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 </head>
 
 <body>
+  <form action="http://localhost:6798/jogada" method="POST" id="denunciaForm">
+    <label for="coluna">Coluna</label>
+    
+    <input type="number" id="coluna" name="coluna" required>
+    
+    <button type="submit">Enviar</button>
+    
+   
+</form>
   <div class="connect-four">
     <div class="board" id="board">
       <!-- Grid cells will be added dynamically with JavaScript -->
     </div>
   </div>
   <script src="script.js"></script>
+  <!-- Adicione este script no final do seu arquivo HTML, após a inclusão do script.js -->
+<!-- <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var board = document.getElementById('board');
+
+    // Adiciona evento de clique às células do tabuleiro
+    board.addEventListener('click', function (event) {
+      // Verifica se o clique foi em uma célula
+      if (event.target.classList.contains('grid-cell')) {
+        // Obtém o índice da coluna clicada
+        var colIndex = (Array.from(event.target.parentNode.children).indexOf(event.target)) % 7;
+        console.log(colIndex + 1);
+        // Chama a função para enviar a requisição POST
+        enviarJogada(colIndex + 1);
+      }
+    });
+
+    // Função para enviar a requisição POST
+    function enviarJogada(coluna) {
+
+      var url = 'http://localhost:6798/jogada';
+      var params = 'coluna=' + coluna;
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          // Aqui você pode lidar com a resposta da requisição, se necessário
+         // console.log(xhr.responseText);
+        }
+      };
+
+      xhr.send(params);
+    }
+  });
+
+</script> -->
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    carregarTabuleiro();
+    var board = document.getElementById('board');
+
+    // Adiciona evento de clique às células do tabuleiro
+    board.addEventListener('click', function (event) {
+      // Verifica se o clique foi em uma célula
+      if (event.target.classList.contains('grid-cell')) {
+        // Obtém o índice da coluna clicada
+        var colIndex = (Array.from(event.target.parentNode.children).indexOf(event.target)) % 7;
+        console.log(colIndex + 1);
+        // Chama a função para enviar a requisição POST
+        enviarJogada(colIndex + 1);
+        
+        // Agora, após o clique, você pode chamar a segunda função
+       
+      }
+      carregarTabuleiro();
+    });
+
+    // Função para enviar a requisição POST
+    function enviarJogada(coluna) {
+      var url = 'http://localhost:6798/jogada';
+      var params = 'coluna=' + coluna;
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', url, true);
+      xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+      xhr.onreadystatechange = function () {
+      if (xhr.readyState == 4) {
+        if (xhr.status == 200) {
+          // Aqui você pode lidar com a resposta da requisição, se necessário
+          // console.log(xhr.responseText);
+          // Após a jogada, recarrega o tabuleiro
+          carregarTabuleiro();
+        } else if (xhr.status == 302) {
+          // Redirecionamento no lado do cliente
+          window.location.href = xhr.getResponseHeader('Location');
+        }
+      }
+    };
+
+      xhr.send(params);
+    }
+
+    // Função para carregar o tabuleiro
+    function carregarTabuleiro() {
+      fetch('http://localhost:6798/tabuleiro/1', {
+          method: 'GET',
+          headers: {
+              'Accept': 'application/json'
+          }
+      })
+      .then(response => {
+          if (!response.ok) {
+              throw new Error('Erro ao obter dados do servidor');
+          }
+          return response.json();
+      })
+      .then(data => {
+          var tabuleiro = data;
+
+          var htmlTabuleiro = '';
+          for (var i = 0; i < tabuleiro.length; i++) {
+              for (var j = 0; j < tabuleiro[i].length; j++) {
+                  var cellValue = tabuleiro[i][j];
+                  var cellClass = '';
+
+                  switch (cellValue) {
+                      case 0:
+                          cellClass = 'celulaNeutra';
+                          break;
+                      case 1:
+                          cellClass = 'celulaAzul';
+                          break;
+                      case 2:
+                          cellClass = 'celulaVermelha';
+                          break;
+                      default:
+                          // Lida com valores desconhecidos, se necessário
+                          break;
+                  }
+
+                  htmlTabuleiro += '<div class="grid-cell ' + cellClass + '">' + '</div>';
+              }
+          }
+
+          $('#board').html(htmlTabuleiro);
+      })
+      .catch(error => {
+          console.error('Erro ao obter dados do servidor:', error.message);
+      });
+    }
+  });
+</script>
+
+
 </body>
 
 </html>
