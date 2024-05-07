@@ -23,7 +23,7 @@ public class JogoDAO {
 		String driverName = "org.postgresql.Driver";                    
 		String serverName = "localhost";
 		String mydatabase = "ligQuatro";
-		int porta = 6000;
+		int porta = 5432;
 		String url = "jdbc:postgresql://" + serverName + ":" + porta +"/" + mydatabase;
 		String username = "ti2cc";
 		String password = "ti@cc";
@@ -57,14 +57,16 @@ public class JogoDAO {
 	}
 	
 	public boolean add(Jogo jogo) {
+		jogo.setId(lerUltimoID());
 	    boolean status = false;
 	    try {  
 	        Statement st = conexao.createStatement();
-	        st.executeUpdate("INSERT INTO jogo (id, estado, idJogador1, idJogador2, idTabuleiro, jogada)"
+	        st.executeUpdate("INSERT INTO jogo (id, estado, \"idJogador1\", \"idJogador2\", \"idTabuleiro\", jogada)"
 	                        + "VALUES (" + jogo.getId() + ", " + jogo.getEstado() + ", "  
 	                        + jogo.getIdJogador1() + ", " + jogo.getIdJogador2() + ", " + jogo.getIdTabuleiro() + ", "
 	                        + jogo.getJogada() + ");");
 	        st.close();
+
 	        status = true;
 	    } catch (SQLException u) {  
 	        throw new RuntimeException(u);
@@ -114,6 +116,22 @@ public class JogoDAO {
 	    }
 	    return status;
 		
+	}
+
+	public int lerUltimoID() {
+		int ultimoID = 1;
+		try {
+			Statement st = conexao.createStatement();
+			ResultSet rs = st.executeQuery("SELECT MAX(id) AS ultimo_id FROM jogo;");
+			if (rs.next()) {
+				ultimoID = rs.getInt("ultimo_id");
+			}
+			rs.close();
+			st.close();
+		} catch (SQLException u) {  
+			throw new RuntimeException(u);
+		}
+		return ultimoID +1;
 	}
 
 }

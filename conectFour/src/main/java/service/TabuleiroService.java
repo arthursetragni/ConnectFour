@@ -3,6 +3,7 @@ package service;
 import dao.*;
 import model.*;
 import spark.*;
+import java.io.*;
 
 public class TabuleiroService{
 	private TabuleiroDAO tabuleiroDAO;
@@ -12,7 +13,7 @@ public class TabuleiroService{
 	}
 	
 	public int create() {
-		Tabuleiro tabuleiro = new Tabuleiro(1);
+		Tabuleiro tabuleiro = new Tabuleiro(0);
 		
 		//this.tabuleiroDAO = new TabuleiroDAO();
 		
@@ -54,14 +55,17 @@ public class TabuleiroService{
 	}
 
 	public String getTabuleiro(Request request,Response response){
+
 		response.header("Access-Control-Allow-Origin", "*");
         response.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
         response.header("Access-Control-Allow-Headers", "Content-Type");
-        
+
         
 		tabuleiroDAO.connect();
 
 		Tabuleiro tabuleiro = tabuleiroDAO.get(Integer.parseInt(request.params("id")));
+
+		tabuleiroDAO.close();
 
 		return converterMatrizParaJSON(tabuleiro.getTabuleiro());
 	}

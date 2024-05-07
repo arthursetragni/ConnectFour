@@ -45,7 +45,7 @@ public class ConectFour{
         if(this.rodada > 6) temGanhador(i, coluna, tabuleiro[i][coluna]);
     }
 
-    private void temGanhador(int fileira, int coluna, int conteudo){
+    public void temGanhador(int fileira, int coluna, int conteudo){
         if(fileira < 3) vitoriaVertical(fileira, coluna, conteudo);
         vitoriaHorizontal(fileira, coluna, conteudo);
         
@@ -118,9 +118,14 @@ public class ConectFour{
         jogo.imprimeTabuleiro();
         Scanner scanner = new Scanner(System.in);
         for(int i = 0; i < numeroDVezes; i++){
-            
-            int coluna = scanner.nextInt();
-            jogo.jogada(coluna - 1);
+            if (i % 2 == 0) {
+                int coluna = scanner.nextInt();
+                jogo.jogada(coluna - 1);
+            } else {
+                int bestMove = Minimax.findBestMove(jogo.tabuleiro, 7);
+                jogo.jogada(bestMove);
+            }
+ 
             if(jogo.estado != 0) {
                 System.out.println("O jogador " + jogo.estado + " ganhou!!");
                 i = numeroDVezes;
@@ -129,3 +134,4 @@ public class ConectFour{
          scanner.close();
     }
 }
+

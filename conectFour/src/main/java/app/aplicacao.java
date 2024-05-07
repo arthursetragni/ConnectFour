@@ -2,18 +2,14 @@ package app;
 
 
 //import model.Denuncia;
-import com.google.gson.Gson;
 
 import static spark.Spark.*;
 
-import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+
 import service.*;
 
 //import service.DenunciaService;
-import spark.Route;
+
 
 public class aplicacao {
 	
@@ -25,14 +21,17 @@ public class aplicacao {
         
 
         
-
         
-        staticFiles.location("/Ligue4FrontEndo");	
         
-        get("/comecar", (request, response) -> jogoService.iniciar(request, response));	
+        staticFiles.location("/Ligue4FrontEndo");
+        
+        get("/comecar", (request, response) -> jogoService.iniciar(request, response));
+        get("/estado", (request, response) -> jogoService.getEstado(request, response));
+        post("/cravaId", (request, response) -> jogoService.cravaIdJogo(request, response));	
         post("/jogada", (request, response) -> jogoService.jogada(request, response));
         get("/tabuleiro/:id", (request, response) -> tabuleiroService.getTabuleiro(request, response));
-        /*
+        
+ /*
          *
         
         get("/produto/update/:id", (request, response) -> tarefaService.update(request, response));

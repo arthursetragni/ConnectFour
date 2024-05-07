@@ -25,6 +25,10 @@ public class Tabuleiro {
 	public int getId() {
 		return this.id;
 	}
+
+	public void setId(int id){
+		this.id = id;
+	}
 	
 	public void setTabuleiro(int[][] novo) {
 		for(int i = 0; i < 6; i++) {

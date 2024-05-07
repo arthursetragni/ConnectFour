@@ -24,7 +24,7 @@ public class TabuleiroDAO {
 		String driverName = "org.postgresql.Driver";                    
 		String serverName = "localhost";
 		String mydatabase = "ligQuatro";
-		int porta = 6000;
+		int porta = 5432;
 		String url = "jdbc:postgresql://" + serverName + ":" + porta +"/" + mydatabase;
 		String username = "ti2cc";
 		String password = "ti@cc";
@@ -60,6 +60,7 @@ public class TabuleiroDAO {
 	public boolean add(Tabuleiro tabuleiro) {
 	    boolean status = false;
 	    try {  
+			tabuleiro.setId(lerUltimoID());
 	        Statement st = conexao.createStatement();
 	        // Asumindo que 'tabuleiro' é uma matriz de inteiros
 	        StringBuilder query = new StringBuilder("INSERT INTO tabuleiro (id, tabuleiro) VALUES (")
@@ -67,6 +68,7 @@ public class TabuleiroDAO {
 	        st.executeUpdate(query.toString());
 	        st.close();
 	        status = true;
+			
 	    } catch (SQLException u) {  
 	        throw new RuntimeException(u);
 	    }
@@ -91,6 +93,22 @@ public class TabuleiroDAO {
 	        throw new RuntimeException(u);
 	    }
 	    return status;
+	}
+
+	public int lerUltimoID() {
+		int ultimoID = 1;
+		try {
+			Statement st = conexao.createStatement();
+			ResultSet rs = st.executeQuery("SELECT MAX(id) AS ultimo_id FROM tabuleiro;");
+			if (rs.next()) {
+				ultimoID = rs.getInt("ultimo_id");
+			}
+			rs.close();
+			st.close();
+		} catch (SQLException u) {  
+			throw new RuntimeException(u);
+		}
+		return ultimoID +1 ;
 	}
 	
 
